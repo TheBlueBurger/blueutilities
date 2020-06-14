@@ -1,7 +1,11 @@
 # What is this?
 
-This is my first module, this may not work as expected
+This is a module that adds `replaceAll` and `safeEval`. It has many bugs/glitches right now
 
 # Installation
 
 `npm i blueutilities`
+
+# Examples
+
+Please click [here](docs/examples.MD) in order to see some examples
