@@ -8,4 +8,4 @@ This is a module that adds `replaceAll` and `safeEval`. It has many bugs/glitche
 
 # Examples
 
-Please click [here](docs/examples.MD) in order to see some examples
+Please click [here](docs/examples.md) in order to see some examples
