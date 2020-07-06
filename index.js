@@ -23,8 +23,8 @@ function setupReplaceAll() {
     }
 };
 function promiseSleep(ms) {
-    if(isNaN(ms)) throw new Error("Incorrect usage! Correct usage: blueutilities.promiseSleep(Number)");
     return new Promise(function(resolve, reject) {
+        if(isNaN(ms)) reject("Incorrect usage! Correct usage: blueutilities.promiseSleep(Number)");
         setTimeout(resolve, ms);
     });
 };
