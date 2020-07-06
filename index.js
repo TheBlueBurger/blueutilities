@@ -24,11 +24,8 @@ function setupReplaceAll() {
 };
 function promiseSleep(ms) {
     if(isNaN(ms)) throw new Error("Incorrect usage! Correct usage: blueutilities.promiseSleep(Number)");
-    if(isNaN(ms)) return;
     return new Promise(function(resolve, reject) {
-        setTimeout(function() {
-            resolve();
-        }, ms)
+        setTimeout(resolve, ms);
     });
 };
 module.exports.safeEval = safeEval;
