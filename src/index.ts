@@ -23,8 +23,7 @@ function replaceAll(text: string, textReplace: string, textReplace2: string): st
     return text.split(textReplace).join(textReplace2).toString();
 }
 function setupReplaceAll(): void {
-    // @ts-ignore
-    String.prototype.replaceAll = function(textReplace, textReplace2) {
+    String.prototype["replaceAll"] = function(textReplace, textReplace2) {
         return this.split(textReplace).join(textReplace2).toString();
     }
 };

@@ -5,6 +5,7 @@
         "outDir": "dist",
         "lib": ["ES6"],
         "declarationDir": "types",
-        "declaration": true
+        "declaration": true,
+        "noEmitOnError": true
     }
 }
