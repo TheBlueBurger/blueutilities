@@ -1,0 +1,10 @@
+{
+    "include": ["src/**/*"],
+    "exclude": ["dist/**/*"],
+    "compilerOptions": {
+        "outDir": "dist",
+        "lib": ["ES6"],
+        "declarationDir": "types",
+        "declaration": true
+    }
+}
