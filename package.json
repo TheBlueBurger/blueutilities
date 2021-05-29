@@ -4,7 +4,7 @@
   "description": "Adds safeEval and replaceAll",
   "main": "dist/index.js",
   "scripts": {
-    "test": "npm build && mocha",
+    "test": "npm run build && mocha",
     "prepare": "npm test",
     "build": "tsc"
   },
