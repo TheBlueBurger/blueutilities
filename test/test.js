@@ -22,7 +22,6 @@ describe("blueutilities", () => {
             it('Should return {error: false, output: "2"} when passed in "1+1"', (done) => {
                 (async() => {
                     let res = await blueutilities.safeEval("1+1", {enabled: true});
-                    console.log(JSON.stringify(res))
                     assert.strictEqual(JSON.stringify(res), JSON.stringify({error: false, output: "2"}));
                     done()
                 })()
