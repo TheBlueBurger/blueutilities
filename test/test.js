@@ -2,19 +2,38 @@ var blueutilities = require("../dist/index.js")
 var assert = require("assert");
 describe("blueutilities", () => {
     describe("safeEval", () => {
-        it('Should return {error: false, output: "2"} when passed in "1+1"', (done) => {
-            (async() => {
-                let res = await blueutilities.safeEval("1+1");
-                assert.strictEqual(JSON.stringify(res), JSON.stringify({error: false, output: "2"}));
-                done()
-            })()
-        })
-        it('Should return {error: true, output: "Error: Test"} when passed in "throw new Error("Test")"', done => {
-            (async() => {
-                let res = await blueutilities.safeEval('throw new Error("Test")');
-                assert.strictEqual(JSON.stringify(res), JSON.stringify({error: true, output: "Error: Test"}));
-                done()
-            })()
+        describe("VM disabled", () => {
+            it('Should return {error: false, output: "2"} when passed in "1+1"', (done) => {
+                (async() => {
+                    let res = await blueutilities.safeEval("1+1", {enabled: false});
+                    assert.strictEqual(JSON.stringify(res), JSON.stringify({error: false, output: "2"}));
+                    done()
+                })()
+            })
+            it('Should return {error: true, output: "Error: Test"} when passed in "throw new Error("Test")"', done => {
+                (async() => {
+                    let res = await blueutilities.safeEval('throw new Error("Test")', {enabled: false});
+                    assert.strictEqual(JSON.stringify(res), JSON.stringify({error: true, output: "Error: Test"}));
+                    done()
+                })()
+            })
+        });
+        describe("VM enabled", () => {
+            it('Should return {error: false, output: "2"} when passed in "1+1"', (done) => {
+                (async() => {
+                    let res = await blueutilities.safeEval("1+1", {enabled: true});
+                    console.log(JSON.stringify(res))
+                    assert.strictEqual(JSON.stringify(res), JSON.stringify({error: false, output: "2"}));
+                    done()
+                })()
+            })
+            it('Should return {error: true, output: "Error: Test"} when passed in "throw new Error("Test")"', done => {
+                (async() => {
+                    let res = await blueutilities.safeEval('throw new Error("Test")', {enabled: true});
+                    assert.strictEqual(JSON.stringify(res), JSON.stringify({error: true, output: "Error: Test"}));
+                    done()
+                })()
+            })
         })
     })
     describe("replaceAll", () => {
