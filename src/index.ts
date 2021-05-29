@@ -61,4 +61,4 @@ function promiseSleep(ms: number): Promise<void> {
         setTimeout(resolve, ms);
     });
 };
-export { promiseSleep, setupReplaceAll, replaceAll, safeEval }
+export default{ promiseSleep, setupReplaceAll, replaceAll, safeEval }
