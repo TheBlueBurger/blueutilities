@@ -21,5 +21,5 @@ worker.parentPort.once("message", (msg: initialMessageInterface) => {
         error = true;
         output = err.toString();
     }
-    worker.parentPort.postMessage({error, output})
+    worker.parentPort.postMessage({ error, output })
 })
