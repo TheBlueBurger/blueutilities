@@ -1,6 +1,6 @@
 # What is this?
 
-This is a module that adds `replaceAll` and `safeEval`. It has many bugs/glitches right now
+This is a module that adds a few functions I think default Javascript is missing. It has typescript typings and i'll add more soon!
 
 # Installation
 
