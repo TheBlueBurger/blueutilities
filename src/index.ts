@@ -2,6 +2,7 @@ import * as vm from "vm";
 import * as threads from "worker_threads";
 import * as path from "path";
 
+
 interface safeEvalReturnedInterface {
     error: boolean;
     output: string;
