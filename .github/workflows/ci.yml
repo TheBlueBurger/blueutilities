@@ -22,8 +22,8 @@ jobs:
       uses: actions/setup-node@v1.4.4
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm run build
     - run: npm install
+    - run: npm run build
     - env:
         CIRCLE_NODE_TOTAL: 9
       run: npm test
