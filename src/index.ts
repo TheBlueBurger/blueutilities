@@ -58,7 +58,7 @@ function setupReplaceAll(): void {
 };
 function promiseSleep(ms: number): Promise<void> {
     return new Promise(function (resolve, reject) {
-        if (isNaN(ms)) reject("Incorrect usage! Correct usage: blueutilities.promiseSleep(Number)");
+        if (isNaN(ms)) reject("Incorrect usage! Correct usage: blueutilities.promiseSleep(Number);");
         setTimeout(resolve, ms);
     });
 };
