@@ -85,6 +85,11 @@ describe("blueutilities", () => {
                 expect(passed < 550 && passed > 450).to.be.true;
                 done();
             })
+        });
+        it("Should reject if it's not a number", done => {
+            blueutilities.promiseSleep(NaN)
+            .catch(() => done())
+            .then(() => {throw new Error("Did not throw error!")})
         })
     })
 })
