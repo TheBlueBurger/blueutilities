@@ -1,4 +1,4 @@
-const blueutilities = require("../dist/index.js")
+const blueutilities = require("..")
 const chai = require("chai");
 const { expect } = chai;
 
@@ -52,26 +52,25 @@ describe("blueutilities", () => {
         });
     })
     describe("setupReplaceAll", () => {
-        it("Should make a function called 'replaceAll' on type string", done => {
+        beforeEach(() => {
             blueutilities.setupReplaceAll();
+        })
+        it("Should make a function called 'replaceAll' on type string", done => {
             // @ts-ignore
             expect(String.prototype.replaceAll).to.be.instanceOf(Function);
             done();
         });
         it("Shouldn't change when passing in text not including the text to change", done => {
-            blueutilities.setupReplaceAll();
             // @ts-ignore
             expect("abc".replaceAll("d", "c")).to.equal("abc")
             done();
         });
         it("Should replace the string", done => {
-            blueutilities.setupReplaceAll();
             // @ts-ignore
             expect("abcdef".replaceAll("e", "f")).to.equal("abcdff");
             done();
         });
         it("Should replace all instances", done => {
-            blueutilities.setupReplaceAll();
             // @ts-ignore
             expect("abcdeef".replaceAll("e", "f")).to.equal("abcdfff");
             done();
@@ -87,9 +86,16 @@ describe("blueutilities", () => {
             })
         });
         it("Should reject if it's not a number", done => {
-            blueutilities.promiseSleep(NaN)
-            .catch(() => done())
-            .then(() => {throw new Error("Did not throw error!")})
+            new Promise(async (res, rej) => {
+                try {
+                    await blueutilities.promiseSleep(NaN)
+                    
+                    done(new Error("Didn't throw error!"))
+                } catch {
+                    done()
+                    res();
+                }
+            })
         })
     })
 })

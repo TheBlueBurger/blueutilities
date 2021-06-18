@@ -1,5 +1,6 @@
 import * as worker from "worker_threads";
 import * as vm from "vm";
+import { safeEvalReturnedInterface } from "./types";
 interface vmOptionsInterface {
     enabled: boolean;
     timeout?: number;
@@ -21,5 +22,6 @@ worker.parentPort.once("message", (msg: initialMessageInterface) => {
         error = true;
         output = err.toString();
     }
+    let toSend: safeEvalReturnedInterface = { error, output };
     worker.parentPort.postMessage({ error, output })
 })

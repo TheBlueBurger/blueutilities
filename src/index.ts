@@ -15,7 +15,8 @@ function safeEval(evalCode: string, vmOptions: vmOptionsInterface = { enabled: t
             if (vmOptions.enabled) {
                 const worker = new threads.Worker(path.join(__dirname, "/safeEvalWorker.js"), {
                     resourceLimits: {
-                        maxOldGenerationSizeMb: vmOptions.ramLimit
+                        maxOldGenerationSizeMb: vmOptions.ramLimit,
+                        maxYoungGenerationSizeMb: vmOptions.ramLimit
                     }
                 });
                 let timeoutTimeout = setTimeout(() => {
@@ -28,8 +29,14 @@ function safeEval(evalCode: string, vmOptions: vmOptionsInterface = { enabled: t
                     let messageToSend: initialMessageInterface = { evalCode, vmOptions };
                     worker.postMessage(messageToSend);
                 });
-                worker.once("message", msg => {
+                worker.once("message", (msg: safeEvalReturnedInterface) => {
                     if (msg instanceof Error) response.error = true;
+                    if(!msg || !msg.error || msg.output) {
+                        msg = msg ?? {
+                            error: true,
+                            output: "Worker did not send a valid message."
+                        }
+                    }
                     response.error = msg.error ?? response.error;
                     response.output = `${msg.output}`;
                     worker.terminate();
@@ -62,7 +69,7 @@ function replaceAll(text: string, textReplace: string, textReplace2: string): st
 }
 function setupReplaceAll(): void {
     String.prototype["replaceAll"] = function (textReplace, textReplace2) {
-        return this.split(textReplace).join(textReplace2).toString();
+        return replaceAll(this, textReplace, textReplace2);
     }
 };
 function promiseSleep(ms: number): Promise<void> {
