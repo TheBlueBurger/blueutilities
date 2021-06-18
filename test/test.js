@@ -89,7 +89,7 @@ describe("blueutilities", () => {
             new Promise(async (res, rej) => {
                 try {
                     await blueutilities.promiseSleep(NaN)
-                    
+
                     done(new Error("Didn't throw error!"))
                 } catch {
                     done()

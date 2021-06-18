@@ -7,7 +7,7 @@
     "test": "mocha",
     "prepack": "npm run build && npm test",
     "build": "tsc",
-    "watch": "nodemon --exec \"pnpm prepack\" -i dist"
+    "watch": "nodemon --exec \"npm prepack\" -i dist"
   },
   "repository": {
     "type": "git",
