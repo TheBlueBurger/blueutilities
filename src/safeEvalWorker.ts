@@ -14,8 +14,8 @@ worker.parentPort.once("message", (msg: initialMessageInterface) => {
     let error: boolean = false;
     try {
         output = vm.runInNewContext(evalCode, {}, {
-            "breakOnSigint": true,
-            "timeout": vmOptions.timeout ?? 500
+            breakOnSigint: true,
+            timeout: vmOptions.timeout ?? 500
         });
     } catch (err) {
         error = true;

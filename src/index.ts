@@ -1,15 +1,7 @@
 import * as threads from "worker_threads";
 import * as path from "path";
+import {safeEvalReturnedInterface, vmOptionsInterface, initialMessageInterface} from "./types";
 
-
-interface safeEvalReturnedInterface {
-    error: boolean;
-    output: string;
-}
-interface vmOptionsInterface {
-    enabled: boolean;
-    timeout?: number;
-}
 function safeEval(evalCode: string, vmOptions: vmOptionsInterface = { enabled: true }): Promise<safeEvalReturnedInterface> {
     return new Promise(function (resolve, _reject) {
         let response: safeEvalReturnedInterface = {
@@ -17,24 +9,42 @@ function safeEval(evalCode: string, vmOptions: vmOptionsInterface = { enabled: t
             "output": ""
         }
         try {
+            vmOptions.enabled = vmOptions.enabled ?? true;
+            vmOptions.timeout = vmOptions.timeout ?? 500;
+            vmOptions.ramLimit = vmOptions.ramLimit ?? 16;
             if (vmOptions.enabled) {
-                const worker = new threads.Worker(path.join(__dirname, "/safeEvalWorker.js"));
+                const worker = new threads.Worker(path.join(__dirname, "/safeEvalWorker.js"), {
+                    resourceLimits: {
+                        maxOldGenerationSizeMb: vmOptions.ramLimit
+                    }
+                });
+                let timeoutTimeout = setTimeout(() => {
+                    worker.terminate();
+                    response.error = true;
+                    response.output = "Too slow response.";
+                    resolve(response);
+                }, vmOptions.timeout)
                 worker.once("online", () => {
-                    worker.postMessage({ evalCode, vmOptions })
+                    let messageToSend: initialMessageInterface = { evalCode, vmOptions };
+                    worker.postMessage(messageToSend);
                 });
                 worker.once("message", msg => {
                     if (msg instanceof Error) response.error = true;
                     response.error = msg.error ?? response.error;
                     response.output = `${msg.output}`;
                     worker.terminate();
+                    clearTimeout(timeoutTimeout);
                     resolve(response);
                 });
-                setTimeout(() => {
-                    worker.terminate();
-                    response.error = true;
-                    response.output = "Too slow response.";
-                    resolve(response);
-                }, vmOptions.timeout ?? 500)
+                worker.once("error", err => {
+                    if(err.name == "ERR_WORKER_OUT_OF_MEMORY") {
+                        worker.terminate();
+                        clearTimeout(timeoutTimeout);
+                        response.error = true;
+                        response.output = "Ran out of memory";
+                        resolve(response);
+                    }
+                })
             } else {
                 response.output = `${eval(evalCode)}`;
                 resolve(response);
@@ -61,5 +71,7 @@ function promiseSleep(ms: number): Promise<void> {
         setTimeout(resolve, ms);
     });
 };
-export default { promiseSleep, setupReplaceAll, replaceAll, safeEval }
-export { promiseSleep, setupReplaceAll, replaceAll, safeEval }
+
+
+export {promiseSleep, setupReplaceAll, replaceAll, safeEval}
+export default {promiseSleep, setupReplaceAll, replaceAll, safeEval}

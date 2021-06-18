@@ -6,6 +6,6 @@
         "lib": ["ES2020"],
         "declarationDir": "types",
         "declaration": true,
-        "noEmitOnError": true
+        "noEmitOnError": false
     }
 }
