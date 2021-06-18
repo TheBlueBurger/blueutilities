@@ -6,8 +6,7 @@
   "scripts": {
     "test": "mocha",
     "prepack": "npm run build && npm test",
-    "build": "tsc",
-    "watch": "nodemon --exec \"npm prepack\" -i dist"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",

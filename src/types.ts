@@ -1,15 +1,15 @@
-interface vmOptionsInterface {
+type vmOptionsType = {
     enabled: boolean;
     timeout?: number;
     ramLimit?: number;
 }
-interface initialMessageInterface {
-    vmOptions: vmOptionsInterface;
+type initialMessageType = {
+    vmOptions: vmOptionsType;
     evalCode: string;
 }
-interface safeEvalReturnedInterface {
+type safeEvalReturnedType = {
     error: boolean;
     output: string;
 }
 
-export {vmOptionsInterface, initialMessageInterface, safeEvalReturnedInterface}
+export {vmOptionsType, initialMessageType, safeEvalReturnedType}

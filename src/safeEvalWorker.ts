@@ -1,15 +1,7 @@
 import * as worker from "worker_threads";
 import * as vm from "vm";
-import { safeEvalReturnedInterface } from "./types";
-interface vmOptionsInterface {
-    enabled: boolean;
-    timeout?: number;
-}
-interface initialMessageInterface {
-    vmOptions: vmOptionsInterface;
-    evalCode: string;
-}
-worker.parentPort.once("message", (msg: initialMessageInterface) => {
+import { safeEvalReturnedType, initialMessageType } from "./types";
+worker.parentPort.once("message", (msg: initialMessageType) => {
     let { evalCode, vmOptions } = msg;
     let output: string;
     let error: boolean = false;
@@ -22,6 +14,6 @@ worker.parentPort.once("message", (msg: initialMessageInterface) => {
         error = true;
         output = err.toString();
     }
-    let toSend: safeEvalReturnedInterface = { error, output };
+    let toSend: safeEvalReturnedType = { error, output };
     worker.parentPort.postMessage({ error, output })
 })

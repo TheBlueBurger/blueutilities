@@ -1,10 +1,10 @@
 import * as threads from "worker_threads";
 import * as path from "path";
-import {safeEvalReturnedInterface, vmOptionsInterface, initialMessageInterface} from "./types";
+import {safeEvalReturnedType, vmOptionsType, initialMessageType} from "./types";
 
-function safeEval(evalCode: string, vmOptions: vmOptionsInterface = { enabled: true }): Promise<safeEvalReturnedInterface> {
+function safeEval(evalCode: string, vmOptions: vmOptionsType = { enabled: true }): Promise<safeEvalReturnedType> {
     return new Promise(function (resolve, _reject) {
-        let response: safeEvalReturnedInterface = {
+        let response: safeEvalReturnedType = {
             "error": false,
             "output": ""
         }
@@ -26,10 +26,10 @@ function safeEval(evalCode: string, vmOptions: vmOptionsInterface = { enabled: t
                     resolve(response);
                 }, vmOptions.timeout)
                 worker.once("online", () => {
-                    let messageToSend: initialMessageInterface = { evalCode, vmOptions };
+                    let messageToSend: initialMessageType = { evalCode, vmOptions };
                     worker.postMessage(messageToSend);
                 });
-                worker.once("message", (msg: safeEvalReturnedInterface) => {
+                worker.once("message", (msg: safeEvalReturnedType) => {
                     if (msg instanceof Error) response.error = true;
                     if(!msg || !msg.error || msg.output) {
                         msg = msg ?? {
