@@ -1,6 +1,6 @@
 import * as threads from "worker_threads";
 import * as path from "path";
-import {safeEvalReturnedType, vmOptionsType, initialMessageType} from "./types";
+import { safeEvalReturnedType, vmOptionsType, initialMessageType } from "./types";
 
 function safeEval(evalCode: string, vmOptions: vmOptionsType = { enabled: true }): Promise<safeEvalReturnedType> {
     return new Promise(function (resolve, _reject) {
@@ -20,10 +20,17 @@ function safeEval(evalCode: string, vmOptions: vmOptionsType = { enabled: true }
                     }
                 });
                 let timeoutTimeout = setTimeout(() => {
-                    worker.terminate();
-                    response.error = true;
-                    response.output = "Too slow response.";
-                    resolve(response);
+                    let awaitWorkerTerminateTimeout = setTimeout(() => {
+                        response.error = true;
+                        response.output = "Catastrophic error: Worker took longer then 2 seconds to terminate. Please report this.";
+                        resolve(response);
+                    }, 2000)
+                    worker.terminate().then(() => {
+                        clearTimeout(awaitWorkerTerminateTimeout);
+                        response.error = true;
+                        response.output = "Too slow response.";
+                        resolve(response);
+                    });
                 }, vmOptions.timeout)
                 worker.once("online", () => {
                     let messageToSend: initialMessageType = { evalCode, vmOptions };
@@ -31,7 +38,7 @@ function safeEval(evalCode: string, vmOptions: vmOptionsType = { enabled: true }
                 });
                 worker.once("message", (msg: safeEvalReturnedType) => {
                     if (msg instanceof Error) response.error = true;
-                    if(!msg || !msg.error || msg.output) {
+                    if (!msg || !msg.error || msg.output) {
                         msg = msg ?? {
                             error: true,
                             output: "Worker did not send a valid message."
@@ -39,26 +46,46 @@ function safeEval(evalCode: string, vmOptions: vmOptionsType = { enabled: true }
                     }
                     response.error = msg.error ?? response.error;
                     response.output = `${msg.output}`;
-                    worker.terminate();
+                    let awaitWorkerTerminateTimeout = setTimeout(() => {
+                        response.error = true;
+                        response.output = "Catastrophic error: Worker took longer then 2 seconds to terminate. Please report this.";
+                        resolve(response);
+                    }, 2000)
                     clearTimeout(timeoutTimeout);
-                    resolve(response);
+                    worker.terminate().then(() => {
+                        clearTimeout(awaitWorkerTerminateTimeout);
+                        resolve(response);
+                    })
                 });
                 worker.once("error", err => {
-                    if(err.name == "ERR_WORKER_OUT_OF_MEMORY") {
-                        worker.terminate();
-                        clearTimeout(timeoutTimeout);
-                        response.error = true;
-                        response.output = "Ran out of memory";
-                        resolve(response);
+                    if (err.name == "ERR_WORKER_OUT_OF_MEMORY") {
+                        let awaitWorkerTerminateTimeout = setTimeout(() => {
+                            response.error = true;
+                            response.output = "Catastrophic error: Worker took longer then 2 seconds to terminate. Please report this.";
+                            resolve(response);
+                        }, 2000)
+                        worker.terminate().then(() => {
+                            clearTimeout(awaitWorkerTerminateTimeout);
+                            clearTimeout(timeoutTimeout);
+                            response.error = true;
+                            response.output = "Ran out of memory";
+                            resolve(response);
+                        })
                     }
                 })
             } else {
-                response.output = `${eval(evalCode)}`;
-                resolve(response);
+                try {
+                    response.output = `${eval(evalCode)}`;
+                    resolve(response);
+                } catch (err) {
+                    response.error = true;
+                    response.output = err.toString();
+                    resolve(response);
+                }
             }
         } catch (err) {
             response.error = true;
-            response.output = err.toString();
+            response.output = "An unknown error occurred while executing safeEval: " + err + "\nPlease submit a issue.";
             resolve(response);
         }
     });
@@ -71,14 +98,14 @@ function setupReplaceAll(): void {
     String.prototype["replaceAll"] = function (textReplace, textReplace2) {
         return replaceAll(this, textReplace, textReplace2);
     }
-};
+}
 function promiseSleep(ms: number): Promise<void> {
     return new Promise(function (resolve, reject) {
         if (isNaN(ms)) reject("Incorrect usage! Correct usage: blueutilities.promiseSleep(Number);");
         setTimeout(resolve, ms);
     });
-};
+}
 
 
-export {promiseSleep, setupReplaceAll, replaceAll, safeEval}
-export default {promiseSleep, setupReplaceAll, replaceAll, safeEval}
+export { promiseSleep, setupReplaceAll, replaceAll, safeEval }
+export default { promiseSleep, setupReplaceAll, replaceAll, safeEval }

@@ -1,6 +1,6 @@
 # What is this?
 
-This is a module that adds a few functions I think default Javascript is missing. It has typescript typings and i'll add more soon!
+This is a module that adds a few functions. It has typescript typings, and I'll add more soon!
 
 # Installation
 

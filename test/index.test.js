@@ -86,10 +86,9 @@ describe("blueutilities", () => {
             })
         });
         it("Should reject if it's not a number", done => {
-            new Promise(async (res, rej) => {
+            new Promise(async (res, _rej) => {
                 try {
                     await blueutilities.promiseSleep(NaN)
-
                     done(new Error("Didn't throw error!"))
                 } catch {
                     done()

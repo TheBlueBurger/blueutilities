@@ -15,5 +15,5 @@ worker.parentPort.once("message", (msg: initialMessageType) => {
         output = err.toString();
     }
     let toSend: safeEvalReturnedType = { error, output };
-    worker.parentPort.postMessage({ error, output })
+    worker.parentPort.postMessage(toSend)
 })
