@@ -1,7 +1,7 @@
 {
   "name": "blueutilities",
-  "version": "1.1.9",
-  "description": "Adds safeEval and replaceAll",
+  "version": "1.2.0",
+  "description": "Adds a few utility functions",
   "main": "dist/index.js",
   "scripts": {
     "test": "mocha",
