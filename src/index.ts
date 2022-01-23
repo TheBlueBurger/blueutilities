@@ -9,36 +9,34 @@ function safeEval(evalCode: string, vmOptions: vmOptionsType = { enabled: true }
             "output": ""
         }
         try {
+            // @ts-expect-error
+            if(vmOptions.__debugThrowErrInIndex) throw new Error("Debug throw error");
             vmOptions.enabled = vmOptions.enabled ?? true;
-            vmOptions.timeout = vmOptions.timeout ?? 500;
-            vmOptions.ramLimit = vmOptions.ramLimit ?? 16;
+            vmOptions.timeout = vmOptions.timeout ?? 2000;
             if (vmOptions.enabled) {
-                const worker = new threads.Worker(path.join(__dirname, "/safeEvalWorker.js"), {
-                    resourceLimits: {
-                        maxOldGenerationSizeMb: vmOptions.ramLimit,
-                        maxYoungGenerationSizeMb: vmOptions.ramLimit
-                    }
-                });
+                const worker = new threads.Worker(path.join(__dirname, "/safeEvalWorker.js"));
                 let timeoutTimeout = setTimeout(() => {
                     let awaitWorkerTerminateTimeout = setTimeout(() => {
                         response.error = true;
                         response.output = "Catastrophic error: Worker took longer then 2 seconds to terminate. Please report this.";
+                        worker.terminate();
                         resolve(response);
-                    }, 2000)
-                    worker.terminate().then(() => {
-                        clearTimeout(awaitWorkerTerminateTimeout);
-                        response.error = true;
-                        response.output = "Too slow response.";
-                        resolve(response);
-                    });
-                }, vmOptions.timeout)
+                    }, "__debugFreeze" in vmOptions ? 0 : 2000);
+                    if (!("__debugFreeze" in vmOptions)) {
+                        worker.terminate().then(() => {
+                            clearTimeout(awaitWorkerTerminateTimeout);
+                            response.error = true;
+                            response.output = "Too slow response.";
+                            resolve(response);
+                        });
+                    }
+                }, "__debugFreeze" in vmOptions ? 0 : vmOptions.timeout)
                 worker.once("online", () => {
                     let messageToSend: initialMessageType = { evalCode, vmOptions };
                     worker.postMessage(messageToSend);
                 });
                 worker.once("message", (msg: safeEvalReturnedType) => {
-                    if (msg instanceof Error) response.error = true;
-                    if (!msg || !msg.error || msg.output) {
+                    if (!msg || !msg.error || !msg.output) {
                         msg = msg ?? {
                             error: true,
                             output: "Worker did not send a valid message."
@@ -49,29 +47,21 @@ function safeEval(evalCode: string, vmOptions: vmOptionsType = { enabled: true }
                     let awaitWorkerTerminateTimeout = setTimeout(() => {
                         response.error = true;
                         response.output = "Catastrophic error: Worker took longer then 2 seconds to terminate. Please report this.";
+                        worker.terminate();
                         resolve(response);
-                    }, 2000)
+                    }, "__debugFreeze2" in vmOptions ? 0 : 2000)
                     clearTimeout(timeoutTimeout);
-                    worker.terminate().then(() => {
-                        clearTimeout(awaitWorkerTerminateTimeout);
-                        resolve(response);
-                    })
-                });
-                worker.once("error", err => {
-                    if (err.name == "ERR_WORKER_OUT_OF_MEMORY") {
-                        let awaitWorkerTerminateTimeout = setTimeout(() => {
-                            response.error = true;
-                            response.output = "Catastrophic error: Worker took longer then 2 seconds to terminate. Please report this.";
-                            resolve(response);
-                        }, 2000)
+                    if (!("__debugFreeze2" in vmOptions)) {
                         worker.terminate().then(() => {
                             clearTimeout(awaitWorkerTerminateTimeout);
-                            clearTimeout(timeoutTimeout);
-                            response.error = true;
-                            response.output = "Ran out of memory";
                             resolve(response);
                         })
                     }
+                });
+                worker.once("error", err => {
+                    response.error = true;
+                    response.output = `Worker error: ${err}`;
+                    resolve(response);
                 })
             } else {
                 try {
@@ -94,6 +84,9 @@ function safeEval(evalCode: string, vmOptions: vmOptionsType = { enabled: true }
 function replaceAll(text: string, textReplace: string, textReplace2: string): string {
     return text.split(textReplace).join(textReplace2).toString();
 }
+/**
+ * @deprecated
+ */
 function setupReplaceAll(): void {
     String.prototype["replaceAll"] = function (textReplace, textReplace2) {
         return replaceAll(this, textReplace, textReplace2);

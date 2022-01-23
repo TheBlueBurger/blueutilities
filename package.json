@@ -4,7 +4,7 @@
   "description": "Adds a few utility functions",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "tap",
     "prepack": "npm run build && npm test",
     "build": "tsc"
   },
@@ -19,11 +19,13 @@
   },
   "homepage": "https://github.com/BlueBurgersTDD/blueutilities#readme",
   "devDependencies": {
-    "@types/chai": "^4.2.18",
     "@types/node": "^16.0.1",
-    "chai": "^4.3.4",
-    "mocha": "^9.0.1",
+    "tap": "^15.1.6",
     "typescript": "^4.3.2"
   },
-  "types": "types/index.d.ts"
+  "types": "types/index.d.ts",
+  "packageManager": "pnpm@6.27.1",
+  "tap": {
+    "check-coverage": false
+  }
 }

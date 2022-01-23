@@ -1,7 +1,6 @@
 type vmOptionsType = {
     enabled: boolean;
     timeout?: number;
-    ramLimit?: number;
 }
 type initialMessageType = {
     vmOptions: vmOptionsType;
