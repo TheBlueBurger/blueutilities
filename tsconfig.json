@@ -1,9 +1,9 @@
 {
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "src/test"],
     "exclude": ["dist/**/*"],
     "compilerOptions": {
         "outDir": "dist",
-        "lib": ["ES2020"],
+        "lib": ["ES2021"],
         "declarationDir": "types",
         "declaration": true,
         "noEmitOnError": false

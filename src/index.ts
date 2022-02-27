@@ -1,6 +1,6 @@
 import * as threads from "worker_threads";
 import * as path from "path";
-import { safeEvalReturnedType, vmOptionsType, initialMessageType } from "./types";
+import { safeEvalReturnedType, vmOptionsType, initialMessageType, allowedRandomStringTypes } from "./types";
 
 function safeEval(evalCode: string, vmOptions: vmOptionsType = { enabled: true }): Promise<safeEvalReturnedType> {
     return new Promise(function (resolve, _reject) {
@@ -99,6 +99,39 @@ function promiseSleep(ms: number): Promise<void> {
     });
 }
 
+let random = {
+    numBetween(num1: number, num2: number): number {
+        return Math.floor(Math.random() * (num2 - num1 + 1) + num1);
+    },
+    choose<t>(arr: t[]): t {
+        return arr[Math.floor(Math.random() * arr.length)];
+    },
+    randomString(length: number, type: allowedRandomStringTypes): string {
+        let chars = "";
+        switch (type) {
+            case "alphanumeric":
+                chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                break;
+            case "alphanumeric_upper":
+                chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                break;
+            case "alphanumeric_lower":
+                chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+                break;
+            case "all":
+                chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;':,./<>?";
+                break;
+            default:
+                throw new Error("Incorrect usage! Correct usage: blueutilities.randomString(Number, String);\nString must be one of the following: alphanumeric, alphanumeric_upper, alphanumeric_lower, all");
+        }
+        let result = "";
+        for (let i = 0; i < length; i++) {
+            result += chars[Math.floor(Math.random() * chars.length)];
+        }
+        return result;
+    }
+}
 
-export { promiseSleep, setupReplaceAll, replaceAll, safeEval }
-export default { promiseSleep, setupReplaceAll, replaceAll, safeEval }
+
+export { promiseSleep, setupReplaceAll, replaceAll, safeEval, random }
+export default { promiseSleep, setupReplaceAll, replaceAll, safeEval, random }
