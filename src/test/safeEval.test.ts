@@ -85,8 +85,5 @@ ava("Should not crash if throws error", async (t) => {
         enabled: false,
         timeout: 4000
     });
-    t.deepEqual(result, {
-        output: "Error: error message",
-        error: true
-    });
+    t.true(result.error);
 });
