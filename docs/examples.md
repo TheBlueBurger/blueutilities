@@ -8,7 +8,7 @@ blueutilities.safeEval("1+1")
     .then(console.dir);
 ```
 ### Output:
-```json
+```
 {
     error: false,
     output: 2
