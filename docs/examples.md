@@ -1,17 +1,5 @@
 # Examples
 
-## setupReplaceAll
-### Input:
-```js
-const blueutilities = require('blueutilities');
-blueutilities.setupReplaceAll();
-console.log("Hello, World!".replaceAll("World", "world"));
-```
-### Output:
-```
-Hello, world
-```
-
 ## safeEval
 ### Input:
 ```js
@@ -20,7 +8,7 @@ blueutilities.safeEval("1+1")
     .then(console.dir);
 ```
 ### Output:
-```
+```json
 {
     error: false,
     output: 2
@@ -51,3 +39,5 @@ Will wait 1 sec
 *One second passes*
 1 sec passed!
 ```
+
+<!-- TODO: Add random -->
