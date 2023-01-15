@@ -81,17 +81,6 @@ function safeEval(evalCode: string, vmOptions: vmOptionsType = { enabled: true }
     });
 }
 
-function replaceAll(text: string, textReplace: string, textReplace2: string): string {
-    return text.split(textReplace).join(textReplace2).toString();
-}
-/**
- * @deprecated
- */
-function setupReplaceAll(): void {
-    String.prototype["replaceAll"] = function (textReplace, textReplace2) {
-        return replaceAll(this, textReplace, textReplace2);
-    }
-}
 function promiseSleep(ms: number): Promise<void> {
     return new Promise(function (resolve, reject) {
         if (isNaN(ms)) reject("Incorrect usage! Correct usage: blueutilities.promiseSleep(Number);");
@@ -101,12 +90,18 @@ function promiseSleep(ms: number): Promise<void> {
 
 let random = {
     numBetween(num1: number, num2: number): number {
+        if(num1 > num2) throw new Error(`${num1} is greater than ${num2}.`);
         return Math.floor(Math.random() * (num2 - num1 + 1) + num1);
     },
+
     choose<t>(arr: t[]): t {
+        if(!Array.isArray(arr)) throw new Error("Incorrect usage! Correct usage: blueutilities.random.choose(Array);");
+        if(arr.length === 0) throw new Error("Array is empty!");
         return arr[Math.floor(Math.random() * arr.length)];
     },
-    randomString(length: number, type: allowedRandomStringTypes): string {
+
+    randomString(length: number, type: allowedRandomStringTypes = "alphanumeric"): string {
+        if(typeof length != "number") throw new Error("length is not a number! Recieved " + typeof length);
         let chars = "";
         switch (type) {
             case "alphanumeric":
@@ -133,5 +128,5 @@ let random = {
 }
 
 
-export { promiseSleep, setupReplaceAll, replaceAll, safeEval, random }
-export default { promiseSleep, setupReplaceAll, replaceAll, safeEval, random }
+export { promiseSleep, safeEval, random }
+export default { promiseSleep, safeEval, random }

@@ -4,30 +4,28 @@
   "description": "Adds a few utility functions",
   "main": "dist/index.js",
   "scripts": {
-    "test": "ava",
-    "prepack": "npm run build && npm test",
+    "test": "vitest",
+    "prepack": "npm run build && npm test -- --run",
+    "dev": "concurrently -n tsc,vitest -c blue,green \"tsc -w\" \"vitest --ui\"",
     "build": "tsc"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BlueBurgersTDD/blueutilities.git"
+    "url": "git+https://github.com/TheBlueBurger/blueutilities.git"
   },
-  "author": "BlueBurgersTDD",
+  "author": "TheBlueBurger",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/BlueBurgersTDD/blueutilities/issues"
+    "url": "https://github.com/TheBlueBurger/blueutilities/issues"
   },
-  "homepage": "https://github.com/BlueBurgersTDD/blueutilities#readme",
+  "homepage": "https://github.com/TheBlueBurger/blueutilities#readme",
   "devDependencies": {
-    "@types/node": "^18.11.17",
-    "ava": "^4.0.1",
-    "typescript": "^4.3.2"
+    "@types/node": "18.11.18",
+    "@vitest/ui": "0.27.1",
+    "concurrently": "^7.6.0",
+    "typescript": "4.9.4",
+    "vitest": "0.27.1"
   },
   "types": "types/index.d.ts",
-  "packageManager": "pnpm@6.27.1",
-  "ava": {
-    "files": [
-      "dist/test/**/*.test.js"
-    ]
-  }
+  "packageManager": "pnpm@6.27.1"
 }

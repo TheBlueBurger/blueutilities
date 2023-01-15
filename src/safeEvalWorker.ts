@@ -8,7 +8,7 @@ worker.parentPort.once("message", (msg: initialMessageType) => {
     let output: string;
     let error: boolean = false;
     try {
-        output = vm.runInNewContext(evalCode, {}, {
+        output = vm.runInContext(evalCode, vm.createContext(Object.create(null)), {
             breakOnSigint: true,
             timeout: vmOptions.timeout ?? 2000
         });

@@ -3,6 +3,7 @@
     "exclude": ["dist/**/*"],
     "compilerOptions": {
         "outDir": "dist",
+        "types": ["node"],
         "lib": ["ES2021"],
         "declarationDir": "types",
         "declaration": true,
