@@ -7,7 +7,6 @@ describe("promiseSleep", async (t) => {
         await blueutilities.promiseSleep(1000);
         let endTime = Date.now();
         // Pass if the difference is between 950 and 1050
-        console.log(`${endTime - startTime}ms`);
         expect(endTime - startTime).toBeGreaterThanOrEqual(950);
         expect(endTime - startTime).toBeLessThanOrEqual(1050);
     });

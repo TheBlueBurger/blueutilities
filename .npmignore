@@ -3,4 +3,5 @@ tsconfig.json
 README.md
 .gitignore
 .github/
-dist/test
+test
+vitest.config.ts
