@@ -24,7 +24,7 @@
     "@vitest/ui": "0.29.3",
     "concurrently": "^7.6.0",
     "typescript": "4.9.4",
-    "vitest": "0.29.3"
+    "vitest": "0.31.1"
   },
   "types": "types/index.d.ts",
   "packageManager": "pnpm@6.27.1"
