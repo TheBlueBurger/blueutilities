@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/TheBlueBurger/blueutilities#readme",
   "devDependencies": {
-    "@types/node": "18.15.3",
+    "@types/node": "20.3.0",
     "@vitest/ui": "0.29.3",
     "concurrently": "^7.6.0",
     "typescript": "4.9.4",
